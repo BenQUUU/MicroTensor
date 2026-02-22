@@ -50,9 +50,12 @@ endif()
 set(LIB_SRCS
         include/Tensor.h
         src/Tensor.cpp
-        # src/Linear.cpp
+        include/Layer.h
+        include/Linear.h
+        src/Linear.cpp
+        include/Backend.h
         # src/Activation.cpp
-        # src/backends/cpu/math_cpu.cpp
+        src/backends/cpu/math_cpu.cpp
 )
 
 file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/dummy.cpp "")
@@ -125,7 +128,7 @@ if(ENABLE_TESTS)
     set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
     FetchContent_MakeAvailable(googletest)
 
-    add_executable(UnitTests tests/test_main.cpp tests/test_tensor.cpp)
+    add_executable(UnitTests tests/test_main.cpp tests/test_tensor.cpp tests/test_math.cpp)
     target_link_libraries(UnitTests PRIVATE MicroTensor_Lib GTest::gtest_main)
 
     add_test(NAME AllTests COMMAND UnitTests)
