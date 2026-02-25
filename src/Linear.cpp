@@ -35,7 +35,7 @@ namespace mt {
         // [Batch_size, out_features]
         Tensor output({batch_size, out_features});
 
-        backend::gemm_cpu_base(input, weights_, bias_, output);
+        backend::gemm(input, weights_, bias_, output);
 
         return output;
     }

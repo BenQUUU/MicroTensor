@@ -54,6 +54,7 @@ set(LIB_SRCS
         include/Linear.h
         src/Linear.cpp
         include/Backend.h
+        src/backends/Backend.cpp
         # src/Activation.cpp
         src/backends/cpu/math_cpu.cpp
 )
@@ -75,7 +76,7 @@ if(IS_X86 AND ENABLE_AVX2)
         if(HAS_AVX2_FLAG)
             target_compile_options(MicroTensor_Lib PRIVATE $<$<COMPILE_LANGUAGE:CXX>:/arch:AVX2>)
             target_compile_definitions(MicroTensor_Lib PUBLIC USE_AVX2)
-            # target_sources(MicroTensor_Lib PRIVATE src/backends/avx/math_avx.cpp)
+            target_sources(MicroTensor_Lib PRIVATE src/backends/avx/math_avx.cpp)
             message(STATUS "AVX2 optimizations enabled (MSVC).")
         endif()
     else()
@@ -106,10 +107,11 @@ if(ENABLE_CUDA)
     set_target_properties(MicroTensor_Lib PROPERTIES CUDA_SEPARABLE_COMPILATION ON)
     target_link_libraries(MicroTensor_Lib PUBLIC CUDA::cudart)
 
-    # target_sources(MicroTensor_Lib PRIVATE
-    #     src/backends/cuda/math_cuda.cpp
-    #     src/backends/cuda/math_kernels.cu
-    # )
+    target_sources(MicroTensor_Lib PRIVATE
+            src/backends/cuda/math_cuda.cpp
+            src/backends/cuda/math_kernels.cu
+            src/backends/cuda/math_kernels.h
+    )
 endif()
 
 add_executable(MicroTensor app/main.cpp)
@@ -128,7 +130,12 @@ if(ENABLE_TESTS)
     set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
     FetchContent_MakeAvailable(googletest)
 
-    add_executable(UnitTests tests/test_main.cpp tests/test_tensor.cpp tests/test_math.cpp)
+    add_executable(UnitTests
+            tests/test_main.cpp
+            tests/test_tensor.cpp
+            tests/test_math.cpp
+            tests/test_benchmark.cpp
+    )
     target_link_libraries(UnitTests PRIVATE MicroTensor_Lib GTest::gtest_main)
 
     add_test(NAME AllTests COMMAND UnitTests)
