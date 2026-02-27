@@ -55,7 +55,8 @@ set(LIB_SRCS
         src/Linear.cpp
         include/Backend.h
         src/backends/Backend.cpp
-        # src/Activation.cpp
+        src/Activation.cpp
+        include/Activation.h
         src/backends/cpu/math_cpu.cpp
 )
 
