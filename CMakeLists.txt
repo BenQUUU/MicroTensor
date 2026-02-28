@@ -58,6 +58,8 @@ set(LIB_SRCS
         src/Activation.cpp
         include/Activation.h
         src/backends/cpu/math_cpu.cpp
+        include/Sequential.h
+        src/Sequential.cpp
 )
 
 file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/dummy.cpp "")
@@ -88,7 +90,7 @@ if(IS_X86 AND ENABLE_AVX2)
                     $<$<COMPILE_LANGUAGE:CXX>:-mfma>
             )
             target_compile_definitions(MicroTensor_Lib PUBLIC USE_AVX2)
-            # target_sources(MicroTensor_Lib PRIVATE src/backends/avx/math_avx.cpp)
+            target_sources(MicroTensor_Lib PRIVATE src/backends/avx/math_avx.cpp)
             message(STATUS "AVX2 optimizations enabled (GCC/Clang).")
         endif()
     endif()
@@ -136,6 +138,7 @@ if(ENABLE_TESTS)
             tests/test_tensor.cpp
             tests/test_math.cpp
             tests/test_benchmark.cpp
+            tests/test_activations.cpp
     )
     target_link_libraries(UnitTests PRIVATE MicroTensor_Lib GTest::gtest_main)
 
